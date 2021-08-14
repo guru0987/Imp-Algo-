@@ -1,0 +1,29 @@
+class FenTree {
+	int n;
+	long fen[];
+	FenTree(int n){
+		this.n = n+1;
+		fen = new long[n+1];
+	}
+	FenTree(int b[]) {
+		fen = new long[b.length+1];
+		this.n = b.length+1;
+		for(int i=1;i<=b.length;i++) {
+			update(i,b[i-1]);
+		}
+	}
+	void update(int idx, int val) {
+		while(idx<n) {
+			fen[idx] += val;
+			idx = idx + (idx & -idx);
+		}
+	}
+	long query(int ind) {
+		long sum = 0;
+	    while(ind > 0) {
+	        sum += fen[ind]; 
+	        ind = ind - (ind & -ind); 
+	    }
+	    return sum; 
+	}
+}
