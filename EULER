@@ -1,0 +1,26 @@
+class EULER {
+	static List<Integer> g[];
+	static int tin[];
+	static int tout[];
+	static int timer;
+	public EULER(List<Integer> g[]) {
+		this.g = g;
+		int n = g.length;
+		tin = new int[n];
+		tout = new int[n];
+		timer = 0;
+		eulerTour(1,0);
+	}
+	public void eulerTour(int node, int par) {
+		tin[node] = ++timer;
+		for(int adj : g[node]) {
+			if(adj!=par) {
+				eulerTour(adj,node);
+			}
+		}
+		tout[node] = timer;
+	}
+	public boolean isAncestor(int x,int y) {
+		return tin[x]<=tin[y] && tout[x]>=tout[y];
+	}
+}
