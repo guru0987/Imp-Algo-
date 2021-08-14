@@ -1,0 +1,82 @@
+class TrieDat {
+
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int n = sc.nextInt();
+		String s[] = new String[n];
+		for(int i=0;i<n;i++)
+			s[i] = sc.next();
+		Trie t = new Trie();
+		for(int i=0;i<n;i++)
+			t.insert(s[i]);
+		System.out.println(t.search("nishant"));
+		System.out.println(t.search("guru"));
+		System.out.println(t.search("rana"));
+		System.out.println(t.search("coding"));
+		System.out.println(t.search("love"));
+	}
+}
+
+class Trie{
+	Trie child[];
+	boolean isEnd;
+	
+	static Trie root = new Trie();
+	
+	Trie() {
+		child = new Trie[26];
+		isEnd = false;
+	}
+	void insert(String s) {
+		int length = s.length();
+		Trie t = root;
+		for(int i = 0;i<length;i++) {
+			int idx = s.charAt(i) - 'a';
+			if(t.child[idx] == null) {
+				t.child[idx] = new Trie(); 
+			}
+			t = t.child[idx];
+		}
+		t.isEnd = true;
+	}
+	
+	boolean search(String s) {
+		int length = s.length();
+		Trie t = root;
+		for(int i=0;i<length;i++) {
+			int idx = s.charAt(i)-'a';
+			if(t.child[idx] == null) {
+				return false;
+			}
+			t = t.child[idx];
+		}
+		return t!=null && t.isEnd;
+	}
+	
+	Trie delete(String s, int i) {
+		if(root == null) return null;
+		
+		if(i == s.length()) {
+			if(root.isEnd)
+				root.isEnd = false;
+			
+			if(isEmpty(root)) return null;
+			
+			return root;
+		}
+		
+		int idx = s.charAt(i) - 'a';
+		root.child[idx] = delete(s,i+1);
+		
+		if(isEmpty(root) && !root.isEnd)
+			return null;
+		
+		return root;
+	}
+	private boolean isEmpty(Trie root2) {
+		for(int i=0;i<26;i++)
+			if(root.child[i]!=null)
+				return false;
+		return true;
+	}
+}
