@@ -1,0 +1,40 @@
+class NcR {
+
+	static long fac[] = new long[100006];
+	static int mod = (int) (1e9+7);
+	
+	static void precompute() {
+		int n = 100005;
+		fac[0] = 1;
+		for(int i=1;i<=n;i++)
+			fac[i] = (i * fac[i-1])%mod;
+	}
+	
+	static int power(long base, int p, int mod2) {
+		
+		long ans = 1;
+		while(p!=0) {
+			if(p%2==0) {
+				base = (base*base)%mod2;
+				p/=2;
+			}
+			else {
+				ans = (ans*base)%mod2;
+				p-=1;
+			}
+		}
+		return (int) (ans%mod2);
+	}
+	
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		precompute();
+		Scanner sc = new Scanner(System.in);
+		long n = sc.nextLong();
+		long r = sc.nextLong();
+		
+		long ans = ((fac[(int)n] * power(fac[(int)(n-r)],mod-2,mod))%mod * power(fac[(int)r],mod-2,mod))%mod;
+		
+		System.out.println(ans);
+	}
+}
