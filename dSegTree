@@ -1,0 +1,81 @@
+class dSegTree {
+	static int n;
+	static long segTree[], lazy[];
+	static int a[];
+	public dSegTree(int n) {
+		segTree = new long[4*n];
+		lazy = new long[4*n];
+		a = new int[n];
+	}
+	public dSegTree(int b[]) {
+		segTree = new long[4*b.length+10];
+		lazy = new long[4*b.length];
+		a = b;
+		build(0,0,a.length-1);
+	}
+	private static void build(int idx, int low, int high) {
+		if(low == high) {
+			segTree[idx] = a[low];
+			return;
+		}
+		
+		int mid = (low+high)>>1;
+		
+		build(2*idx+1,low,mid);
+		build(2*idx+2,mid+1,high);
+		
+		segTree[idx] = segTree[2*idx+1] + segTree[2*idx+2];
+	}
+	public static void update(int l, int r, int val) {
+		Update(0,0,a.length-1,l,r,val);
+	}
+	private static void Update(int ind, int low, int high, int l, int r, int val) {
+	    if(lazy[ind] != 0) {
+	        segTree[ind] += lazy[ind] * (high - low + 1); 
+	        if(low != high) {
+	            lazy[2*ind+1] += lazy[ind];
+	            lazy[2*ind+2] += lazy[ind]; 
+	        }
+	        lazy[ind] = 0; 
+	    }
+	    if(l>high || low > r) {
+	        return; 
+	    }
+	    if(low >= l && high <= r) {
+	        segTree[ind] += val * (high - low + 1); 
+	        
+	        if(low != high) {
+	            lazy[2*ind + 1] += val; 
+	            lazy[2*ind+2] += val; 
+	        }
+	        return; 
+	    }
+	    int mid = (low + high) >> 1; 
+	    Update(2*ind+1, low, mid, l, r, val); 
+	    Update(2*ind+2, mid+1, high, l, r, val);
+	    segTree[ind] = segTree[2*ind+1] + segTree[2*ind+2]; 
+	}
+	public static long query(int l, int r) {
+		return Query(0,0,a.length-1,l,r);
+	}
+	private static long Query(int ind, int low, int high, int l, int r) {
+	    if(lazy[ind] != 0) {
+	        segTree[ind] += lazy[ind] * (high - low + 1); 
+	        if(low != high) {
+	            lazy[2*ind+1] += lazy[ind];
+	            lazy[2*ind+2] += lazy[ind]; 
+	        }
+	        lazy[ind] = 0; 
+	    }
+	    if(l>high || low > r) {
+	        return 0; 
+	    }
+	    if(low >= l && high <= r) {
+	        return segTree[ind]; 
+	    }
+	    int mid = (low + high) >> 1; 
+	    long left = Query(2*ind+1, low, mid, l, r); 
+	    long right = Query(2*ind+2, mid+1, high, l, r); 
+	    return left + right; 
+	}
+}
