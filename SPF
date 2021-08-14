@@ -1,0 +1,33 @@
+class SPF {
+	static int MAXN = (int)(1e6+10);
+	static int spf[] = new int[MAXN];
+    static void sieve()
+    {
+        spf[1] = 1;
+        for (int i=2; i<MAXN; i++)
+        	spf[i] = i;
+        
+        for (int i=4; i<MAXN; i+=2)
+            spf[i] = 2;
+      
+        for (int i=3; i*i<MAXN; i++)
+        {
+            if (spf[i] == i)
+            {
+                for (int j=i*i; j<MAXN; j+=i)
+                    if (spf[j]==j)
+                        spf[j] = i;
+            }
+        }
+    }
+    static List<Integer> getFactorization(int x)
+    {
+        List<Integer> ret = new ArrayList<>();
+        while (x != 1)
+        {
+            ret.add(spf[x]);
+            x = x / spf[x];
+        }
+        return ret;
+    }
+}
