@@ -1,0 +1,61 @@
+class SegTree {
+	static int n;
+	static int segTree[];
+	static int a[];
+	public SegTree(int n) {
+		segTree = new int[4*n];
+		a = new int[n];
+	}
+	public SegTree(int b[]) {
+		segTree = new int[4*b.length+10];
+		a = b;
+		build(0,0,a.length-1);
+	}
+	private static void build(int idx, int low, int high) {
+		if(low == high) {
+			segTree[idx] = a[low];
+			return;
+		}
+		
+		int mid = (low+high)/2;
+		
+		build(2*idx+1,low,mid);
+		build(2*idx+2,mid+1,high);
+		
+		segTree[idx] = segTree[2*idx+1] + segTree[2*idx+2];
+	}
+	public static void update(int i , int val) {
+		Update(0,0,a.length-1,i,val);
+	}
+	private static void Update(int idx,int low,int high,int i,int val) {
+		if(low == high) {
+			a[low] += val;
+			segTree[idx] += val;
+			return;
+		}
+		
+		int mid = (low+high) >> 1;
+		
+		if(i<=mid) Update(2*idx+1,low,mid,i,val);
+		else Update(2*idx+2,mid+1,high,i,val);
+		
+		segTree[idx] = segTree[2*idx+1] + segTree[2*idx+2];
+	}
+	public static int query(int l , int r) {
+		return Query(0,0,a.length-1,l,r);
+	}
+	static int Query(int idx,int low,int high,int l,int r) {
+		
+		if(r<low || l>high) return 0;
+		
+		if(l<=low && r>=high)
+			return segTree[idx];
+		
+		int mid = (low+high)>>1;
+		
+		int left = Query(2*idx+1,low,mid,l,r);
+		int right = Query(2*idx+2,mid+1,high,l,r);
+		
+		return left + right;
+	}
+}
