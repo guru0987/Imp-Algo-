@@ -1,0 +1,50 @@
+class LCA {
+	static List<Integer> tre[];
+	static int par[][];
+	static int lev[];
+	public LCA(List<Integer> tre[]) {
+		this.tre = tre;
+		int n = tre.length;
+		par = new int[n+1][20];
+		lev = new int[n+1];
+		dfs20(1,0,0);
+	}
+	public static int lca(int u, int v) {
+		if(lev[u]<lev[v]) {
+			int temp = u;
+			u = v;
+			v = temp;
+		}
+		int dif = lev[u] - lev[v];
+		int idx = 0;
+		while(dif!=0) {
+			if((dif&1) == 1) {
+				u = par[u][idx];
+			}
+			idx++;
+			dif >>= 1;
+		}
+		
+		if(u == v) return u;
+		
+		for(int i=19;i>=0;i--) {
+			if(par[u][i]!=par[v][i]) {
+				u = par[u][i];
+				v = par[v][i];
+			}
+		}
+		return par[u][0];
+	}
+	private static void dfs20(int node, int parent, int level) {
+		par[node][0] = parent;
+		lev[node] = level;
+		for(int i=1;i<=19;i++) {
+			par[node][i] = par[par[node][i-1]][i-1];
+		}
+		for(int adj : tre[node]) {
+			if(adj != parent) {
+				dfs20(adj,node,level+1);
+			}
+		}
+	}
+}
